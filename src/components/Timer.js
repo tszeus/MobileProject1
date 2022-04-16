@@ -1,90 +1,92 @@
 import { Text, View, StyleSheet, Vibration, TextInput } from "react-native";
-import React, { Component } from "react";
+import React, { useEffect, useState } from "react";
 import TimerButtons from "./TimerButtons";
 import TimerDisplay from "./TimerDisplay";
 import TimerHeader from "./TimerHeader";
 
-export default class Timer extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      running: false,
-      time: this.props.period * 60,
-    };
-  }
+const Timer = ({ intervalType, Oncomplete, period }) => {
+  const [running, setRunning] = useState("false");
+  const [time, setTime] = useState(period * 60);
+  const [timeId, setTimeId] = useState();
+  const [isPlayed, setIsPlayed] = useState(0);
+  useEffect(() => {
+    if (running === "true" && time === 0) {
+      setIsPlayed(0);
 
-  // gets called when a stream of new props arrive from parent component
-  componentWillReceiveProps(nextProps) {
-    this.setState({ running: false, time: nextProps.period * 60 });
-    if (this.state.running === true && this.state.time == 0) {
-      this.handlePlay();
+      handlePlay();
+
+      clearInterval(timeId);
+      setTime(period * 60);
+      // Vibration.vibrate([500, 500, 500]);
+      Oncomplete();
+    } else if (running === false) {
+      clearInterval(timeId);
     }
-  }
-  render() {
-    return (
-      <View>
-        <TimerHeader
-          running={this.state.running}
-          intervalType={this.props.intervalType}
-        />
-        <TimerDisplay time={this.state.time} />
-        <TimerButtons
-          play={this.handlePlay}
-          pause={this.handlePause}
-          reset={this.handleReset}
-          running={this.state.running}
-        />
-      </View>
-    );
-  }
+  }, [time]);
 
-  componentDidUpdate() {
-    if (this.state.running === true && this.state.time == 0) {
-      clearInterval(this.timerId);
-      Vibration.vibrate([500, 500, 500]);
-      this.props.Oncomplete();
-    } else if (this.state.running === false) {
-      clearInterval(this.timerId);
+  useEffect(() => {
+    setTime(period * 60);
+  }, [period]);
+
+  console.log(isPlayed);
+  const handlePlay = () => {
+    console.log("play");
+    if (isPlayed == 0) {
+      setIsPlayed((isPlayed) => isPlayed + 1);
+      setRunning("true");
+      setTimeId(
+        setInterval(() => {
+          setTime((time) => time - 1);
+        }, 1000)
+      );
     }
-  }
-
-  // gets triggered when Play button is pressed
-  handlePlay = () => {
-    this.setState({
-      running: true,
-    });
-    this.timerId = setInterval(() => {
-      this.setState({
-        time: this.state.time - 1,
-      });
-    }, 1000);
   };
 
-  //gets triggered when Pause button is pressed
-  handlePause = () => {
-    clearInterval(this.timerId);
-    this.setState({
-      running: false,
-    });
+  const handlePause = () => {
+    clearInterval(timeId);
+    setRunning("false");
+  };
+  const handleReset = () => {
+    clearInterval(timeId);
+    setRunning("false");
+    setTime(period * 60);
   };
 
-  // gets triggered when Reset button is pressed
-  handleReset = () => {
-    clearInterval(this.timerId);
-    this.setState({
-      running: false,
-      time: this.props.period * 60,
-    });
-  };
-}
+  return (
+    <View>
+      <TimerHeader running={running} intervalType={intervalType} />
+      <TimerDisplay time={time} />
+      <TimerButtons
+        play={() => handlePlay()}
+        pause={() => handlePause()}
+        reset={() => {
+          handleReset();
+        }}
+        running={running}
+      />
+    </View>
+  );
+};
+
+export default Timer;
+
+// componentDidUpdate() {
+
+// }
+
+// gets triggered when Play button is pressed
+
+//gets triggered when Pause button is pressed
+
+// gets triggered when Reset button is pressed
 
 const styles = StyleSheet.create({
   textStyle: {
     color: "#C2362B",
-    fontSize: 25,
+    fontSize: 20,
     fontWeight: "500",
     letterSpacing: 1.5,
-    fontFamily: Platform.OS == "android" ? "notoserif" : "system",
+    // fontFamily: Platform.OS == "android" ? "notoserif" : "system",
     marginTop: 40,
     padding: 20,
   },

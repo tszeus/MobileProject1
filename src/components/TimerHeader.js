@@ -1,34 +1,31 @@
 import { Text, View, StyleSheet } from "react-native";
 import React, { Component } from "react";
 
-export default class TimerHeader extends Component {
-  handleDisplay = () => {
-    if (this.props.intervalType === "Working") {
-      if (this.props.running === true) {
+const TimerHeader = ({ intervalType, running }) => {
+  const handleDisplay = () => {
+    if (intervalType === "Working") {
+      if (running === true) {
         return "Keep working hard!";
       } else {
         return "Time to work!";
       }
     } else {
-      if (this.props.running === true) {
+      if (running === true) {
         return "It's break time! Enjoy";
       } else {
         return "Relax :)";
       }
     }
   };
+  return <Text style={styles.textStyle}>{handleDisplay()}</Text>;
+};
 
-  render() {
-    let texttoshow = this.handleDisplay();
-    return <Text style={styles.textStyle}>{texttoshow}</Text>;
-  }
-}
+export default TimerHeader;
 const styles = StyleSheet.create({
   textStyle: {
-    fontSize: 25,
+    fontSize: 20,
     fontWeight: "500",
     letterSpacing: 1.5,
-    fontFamily: Platform.OS == "android" ? "notoserif" : "system",
     marginTop: 40,
     padding: 20,
   },

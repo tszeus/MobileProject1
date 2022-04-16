@@ -1,102 +1,80 @@
 import { Text, View, StyleSheet, TextInput } from "react-native";
-import React, { Component } from "react";
+import React, { useState } from "react";
 import Timer from "./Timer";
 
-export default class PomodoroTimer extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      workTime: 25,
-      breakTime: 5,
-      intervalType: "Working",
-    };
-  }
-
+const PomodoroTimer = () => {
+  const [workTime, setWorkTime] = useState(0.1);
+  const [breakTime, setBreakTime] = useState(0.1);
+  const [intervalType, setIntervalType] = useState("Working");
+  console.log(intervalType);
   // handles completion of timer
-  handleTimerCompleted = () => {
-    if (this.state.intervalType === "Working") {
-      this.setState({
-        intervalType: "Break",
-      });
-    } else {
-      this.setState({
-        intervalType: "Working",
-      });
-    }
+  const handleTimerCompleted = () => {
+    intervalType === "Working"
+      ? setIntervalType("Break")
+      : setIntervalType("Working");
   };
 
   // gets triggered on change of worktimer text
-  handleWorkTime = (text) => {
+  const handleWorkTime = (text) => {
     if (text >= 0) {
-      this.setState({
-        workTime: text,
-      });
+      setWorkTime(text);
     } else {
-      alert("Time invalid. Setting value to default. Please enter valid time");
-      this.setState({
-        workTime: 25,
-      });
+      setWorkTime(25);
     }
   };
 
   // gets triggered on change of breaktimer text
-  handleBreakTime = (text) => {
+  const handleBreakTime = (text) => {
     if (text >= 0) {
-      this.setState({
-        breakTime: text,
-      });
+      setBreakTime(text);
     } else {
-      alert("Time invalid. Setting value to default. Please enter valid time");
-      this.setState({
-        breakTime: 5,
-      });
+      setBreakTime(5);
     }
   };
 
   // called to set the timer's time
-  handleTime = () => {
-    if (this.state.intervalType === "Working") {
-      return this.state.workTime;
+  const handleTime = () => {
+    if (intervalType === "Working") {
+      return workTime;
     } else {
-      return this.state.breakTime;
+      return breakTime;
     }
   };
 
-  render() {
-    let time = this.handleTime();
-    return (
-      <View>
-        <View style={styles.row}>
-          <View style={styles.inputWrap}>
-            <Text style={styles.textStyle}>WorkTime</Text>
-            <TextInput
-              style={styles.textStyle}
-              keyboardType={"numeric"}
-              defaultValue={"" + this.state.workTime}
-              placeholder="workTime in mins"
-              onChangeText={this.handleWorkTime}
-            />
-          </View>
-          <View style={styles.inputWrap}>
-            <Text style={styles.textStyle}>BreakTime</Text>
-            <TextInput
-              style={styles.textStyle}
-              keyboardType={"numeric"}
-              defaultValue={"" + this.state.breakTime}
-              placeholder="breakTime in mins"
-              onChangeText={this.handleBreakTime}
-            />
-          </View>
+  return (
+    <View>
+      <View style={styles.row}>
+        <View style={styles.inputWrap}>
+          <Text style={styles.textStyle}>WorkTime</Text>
+          <TextInput
+            style={styles.textStyle}
+            keyboardType={"numeric"}
+            defaultValue={"" + workTime}
+            placeholder="workTime in mins"
+            onChangeText={(e) => handleWorkTime(e)}
+          />
         </View>
-        <Timer
-          intervalType={this.state.intervalType}
-          Oncomplete={this.handleTimerCompleted}
-          period={time}
-        />
+        <View style={styles.inputWrap}>
+          <Text style={styles.textStyle}>BreakTime</Text>
+          <TextInput
+            style={styles.textStyle}
+            keyboardType={"numeric"}
+            defaultValue={"" + breakTime}
+            placeholder="breakTime in mins"
+            onChangeText={(e) => handleBreakTime(e)}
+          />
+        </View>
       </View>
-    );
-  }
-}
+      <Timer
+        intervalType={intervalType}
+        Oncomplete={handleTimerCompleted}
+        period={handleTime()}
+      />
+    </View>
+  );
+};
+
+export default PomodoroTimer;
 
 const styles = StyleSheet.create({
   row: {
@@ -110,10 +88,10 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   textStyle: {
-    fontSize: 25,
+    fontSize: 20,
     fontWeight: "500",
     letterSpacing: 1.5,
-    fontFamily: Platform.OS == "android" ? "notoserif" : "system",
+    // fontFamily: Platform.OS == "android" ? "notoserif" : "system",
     marginTop: 40,
     padding: 20,
   },

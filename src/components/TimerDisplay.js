@@ -1,22 +1,21 @@
 import { Text, View, StyleSheet } from "react-native";
-import React, { Component } from "react";
+import React from "react";
 
-export default class TimerDisplay extends Component {
-  render() {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.textStyle}>
-          {Math.floor(this.props.time / 60)
-            .toString()
-            .padStart(2, "0") +
-            ":" +
-            (this.props.time % 60).toString().padStart(2, "0")}
-        </Text>
-      </View>
-    );
-  }
-}
+const TimerDisplay = ({ time }) => {
+  return (
+    <View style={styles.container}>
+      <Text style={styles.textStyle}>
+        {Math.floor(time / 60)
+          .toString()
+          .padStart(2, "0") +
+          ":" +
+          (time % 60).toString().padStart(2, "0")}
+      </Text>
+    </View>
+  );
+};
 
+export default TimerDisplay;
 const styles = StyleSheet.create({
   container: {
     marginTop: "7%",

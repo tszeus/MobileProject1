@@ -1,43 +1,23 @@
 import { Text, View, TouchableOpacity, StyleSheet } from "react-native";
-import React, { Component } from "react";
+import React from "react";
 
-export default class TimerButtons extends Component {
-  state = {};
+const TimerButtons = ({ pause, reset, play }) => {
+  return (
+    <View style={styles.container}>
+      <TouchableOpacity style={styles.buttonStyle} onPress={pause}>
+        <Text style={styles.buttonText}>Pause</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.buttonStyle} onPress={reset}>
+        <Text style={styles.buttonText}>Reset</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.buttonStyle} onPress={play}>
+        <Text style={styles.buttonText}>Play</Text>
+      </TouchableOpacity>
+    </View>
+  );
+};
 
-  //renders pause, play and reset buttons
-  render() {
-    if (this.props.running === true) {
-      return (
-        <View style={styles.container}>
-          <TouchableOpacity
-            style={styles.buttonStyle}
-            onPress={this.props.pause}
-          >
-            <Text style={styles.buttonText}>Pause</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.buttonStyle}
-            onPress={this.props.reset}
-          >
-            <Text style={styles.buttonText}>Reset</Text>
-          </TouchableOpacity>
-        </View>
-      );
-    } else {
-      return (
-        <View style={styles.container}>
-          <TouchableOpacity
-            style={styles.buttonStyle}
-            onPress={this.props.play}
-          >
-            <Text style={styles.buttonText}>Play</Text>
-          </TouchableOpacity>
-        </View>
-      );
-    }
-  }
-}
-
+export default TimerButtons;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
